@@ -16,17 +16,16 @@ class PardotVisitorIdentifier extends Identifier
 
     public function getCampaignId(): string
     {
-        if (empty($this->payload)) {
-            throw new DigitalMarketingFrameworkException(static::MESSAGE_NO_VALID_IDENTIFIER);
+        foreach ($this->payload as $campaignId => $data) {
+            if (isset($data['id'])) {
+                return $campaignId;
+            }
         }
-        return substr(reset(array_keys($this->payload)), 10);
+        throw new DigitalMarketingFrameworkException(static::MESSAGE_NO_VALID_IDENTIFIER);
     }
 
     public function getVisitorId(): string
     {
-        if (empty($this->payload)) {
-            throw new DigitalMarketingFrameworkException(static::MESSAGE_NO_VALID_IDENTIFIER);
-        }
-        return reset($this->payload)['id'];
+        return $this->payload[$this->getCampaignId()]['id'];
     }
 }

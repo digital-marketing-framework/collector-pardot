@@ -10,8 +10,8 @@ use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 
 class PardotIdentifierCollector extends IdentifierCollector
 {
-    protected const REGEXP_COOKIE_VISITOR_ID = '/^visitor_id[0-9]+$/';
-    protected const REGEXP_COOKIE_VISITOR_HASH = '/^visitor_id[0-9]+-hash$/';
+    protected const REGEXP_COOKIE_VISITOR_ID = '/^visitor_id([0-9]+)$/';
+    protected const REGEXP_COOKIE_VISITOR_HASH = '/^visitor_id([0-9]+)-hash$/';
 
     protected function prepareContext(ContextInterface $source, WriteableContextInterface $target): void
     {
@@ -27,15 +27,17 @@ class PardotIdentifierCollector extends IdentifierCollector
 
     protected function collect(ContextInterface $context): ?IdentifierInterface
     {
+        $idFound = false;
         $payload = [];
         foreach ($context->getCookies() as $name => $value) {
-            if (preg_match(static::REGEXP_COOKIE_VISITOR_ID, $name)) {
-                $payload[$name]['id'] = $value;
-            } elseif (preg_match(static::REGEXP_COOKIE_VISITOR_HASH, $name)) {
-                $payload[$name]['hash'] = $value;
+            if (preg_match(static::REGEXP_COOKIE_VISITOR_ID, $name, $matches)) {
+                $payload[$matches[1]]['id'] = $value;
+                $idFound = true;
+            } elseif (preg_match(static::REGEXP_COOKIE_VISITOR_HASH, $name, $matches)) {
+                $payload[$matches[1]]['hash'] = $value;
             }
         }
-        if (!empty($payload)) {
+        if ($idFound) {
             return new PardotVisitorIdentifier($payload);
         }
         return null;
