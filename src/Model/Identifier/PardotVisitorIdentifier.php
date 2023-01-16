@@ -11,7 +11,7 @@ class PardotVisitorIdentifier extends Identifier
 
     protected function getInternalCacheKey(): string
     {
-        return $this->getCampaignId() . ':' . $this->getVisitorId();
+        return $this->getCampaignId() . '-' . $this->getVisitorId();
     }
 
     public function getCampaignId(): string
