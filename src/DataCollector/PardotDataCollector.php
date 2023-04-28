@@ -12,6 +12,10 @@ use DigitalMarketingFramework\Collector\Pardot\Connector\PardotConnectorInterfac
 use DigitalMarketingFramework\Collector\Pardot\Exception\PardotConnectorException;
 use DigitalMarketingFramework\Collector\Pardot\Model\Identifier\PardotProspectIdentifier;
 use DigitalMarketingFramework\Collector\Pardot\Model\Identifier\PardotVisitorIdentifier;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ScalarValues;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Exception\InvalidIdentifierException;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
@@ -19,8 +23,8 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class PardotDataCollector extends DataCollector
 {
-    protected const KEY_OUTPUT_MODE = 'outputMode';
-    protected const DEFAULT_OUTPUT_MODE = 'simple';
+    public const KEY_OUTPUT_MODE = 'outputMode';
+    public const DEFAULT_OUTPUT_MODE = 'simple';
 
     public const STATUS_CODE_INVALID_VISITOR_ID = 24;
 
@@ -133,5 +137,13 @@ class PardotDataCollector extends DataCollector
         return parent::getDefaultConfiguration() + [
             static::KEY_OUTPUT_MODE => static::DEFAULT_OUTPUT_MODE,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_OUTPUT_MODE, new StringSchema(static::DEFAULT_OUTPUT_MODE, new ScalarValues(['simple', 'full'])));
+        return $schema;
     }
 }
