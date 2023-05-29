@@ -13,9 +13,9 @@ use DigitalMarketingFramework\Collector\Pardot\Exception\PardotConnectorExceptio
 use DigitalMarketingFramework\Collector\Pardot\Model\Identifier\PardotProspectIdentifier;
 use DigitalMarketingFramework\Collector\Pardot\Model\Identifier\PardotVisitorIdentifier;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ScalarValues;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ScalarValues;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Exception\InvalidIdentifierException;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
@@ -143,7 +143,7 @@ class PardotDataCollector extends DataCollector
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_OUTPUT_MODE, new StringSchema(static::DEFAULT_OUTPUT_MODE, new ScalarValues(['simple', 'full'])));
+        $schema->addProperty(static::KEY_OUTPUT_MODE, new StringSchema(static::DEFAULT_OUTPUT_MODE, new ScalarValues(['simple' => 'Simple', 'full' => 'Full'])));
         return $schema;
     }
 }
