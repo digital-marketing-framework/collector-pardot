@@ -132,18 +132,17 @@ class PardotDataCollector extends DataCollector
         }
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_OUTPUT_MODE => static::DEFAULT_OUTPUT_MODE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_OUTPUT_MODE, new StringSchema(static::DEFAULT_OUTPUT_MODE, new ScalarValues(['simple' => 'Simple', 'full' => 'Full'])));
+
+        $outputMode = new StringSchema(static::DEFAULT_OUTPUT_MODE);
+        $outputMode->getAllowedValues()->addValue('simple');
+        $outputMode->getAllowedValues()->addValue('full');
+        $outputMode->getRenderingDefinition()->setFormat('select');
+
+        $schema->addProperty(static::KEY_OUTPUT_MODE, $outputMode);
         return $schema;
     }
 }
