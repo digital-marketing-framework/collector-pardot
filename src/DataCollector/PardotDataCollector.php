@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Collector\Pardot\Connector\PardotConnectorInterfac
 use DigitalMarketingFramework\Collector\Pardot\Exception\PardotConnectorException;
 use DigitalMarketingFramework\Collector\Pardot\Model\Identifier\PardotProspectIdentifier;
 use DigitalMarketingFramework\Collector\Pardot\Model\Identifier\PardotVisitorIdentifier;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
@@ -140,7 +141,7 @@ class PardotDataCollector extends DataCollector
         $outputMode = new StringSchema(static::DEFAULT_OUTPUT_MODE);
         $outputMode->getAllowedValues()->addValue('simple');
         $outputMode->getAllowedValues()->addValue('full');
-        $outputMode->getRenderingDefinition()->setFormat('select');
+        $outputMode->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
 
         $schema->addProperty(static::KEY_OUTPUT_MODE, $outputMode);
         return $schema;
