@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Collector\Pardot\Model\Identifier;
 
-use DigitalMarketingFramework\Core\Model\Identifier\Identifier as Identifier;
+use DigitalMarketingFramework\Core\Model\Identifier\Identifier;
 
 class PardotProspectIdentifier extends Identifier
 {

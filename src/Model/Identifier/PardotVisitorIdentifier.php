@@ -2,8 +2,8 @@
 
 namespace DigitalMarketingFramework\Collector\Pardot\Model\Identifier;
 
-use DigitalMarketingFramework\Core\Model\Identifier\Identifier;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Model\Identifier\Identifier;
 
 class PardotVisitorIdentifier extends Identifier
 {
@@ -21,6 +21,7 @@ class PardotVisitorIdentifier extends Identifier
                 return $campaignId;
             }
         }
+
         throw new DigitalMarketingFrameworkException(static::MESSAGE_NO_VALID_IDENTIFIER);
     }
 

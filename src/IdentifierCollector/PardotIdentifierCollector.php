@@ -10,8 +10,9 @@ use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 
 class PardotIdentifierCollector extends IdentifierCollector
 {
-    protected const REGEXP_COOKIE_VISITOR_ID = '/^visitor_id([0-9]+)$/';
-    protected const REGEXP_COOKIE_VISITOR_HASH = '/^visitor_id([0-9]+)-hash$/';
+    protected const REGEXP_COOKIE_VISITOR_ID = '/^visitor_id(\d+)$/';
+
+    protected const REGEXP_COOKIE_VISITOR_HASH = '/^visitor_id(\d+)-hash$/';
 
     protected function prepareContext(ContextInterface $source, WriteableContextInterface $target): void
     {
@@ -37,9 +38,11 @@ class PardotIdentifierCollector extends IdentifierCollector
                 $payload[$matches[1]]['hash'] = $value;
             }
         }
+
         if ($idFound) {
             return new PardotVisitorIdentifier($payload);
         }
+
         return null;
     }
 }

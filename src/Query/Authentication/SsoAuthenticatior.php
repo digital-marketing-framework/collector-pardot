@@ -14,11 +14,9 @@ class SsoAuthenticatior extends Query implements PardotAuthenticatorInterface
         PardotConnectorInterface::ENVIRONMENT_DEVELOP_ORG => 'https://login.salesforce.com',
     ];
 
-    protected string $environment = PardotConnectorInterface::ENVIRONMENT_PRODUCTION;
-
-    public function __construct(string $environment)
-    {
-        $this->environment = $environment;
+    public function __construct(
+        protected string $environment
+    ) {
     }
 
     protected function getHost(): string
@@ -28,14 +26,16 @@ class SsoAuthenticatior extends Query implements PardotAuthenticatorInterface
 
     /**
      * @param ResponseInterface $response
+     *
      * @return array<mixed>|bool
      */
     protected function computeResponse(ResponseInterface $response): array|bool
     {
         $result = $response->getBody()->getContents();
         if ($result) {
-            return json_decode($result, true);
+            return json_decode((string)$result, true, 512, JSON_THROW_ON_ERROR);
         }
+
         return false;
     }
 
@@ -63,7 +63,7 @@ class SsoAuthenticatior extends Query implements PardotAuthenticatorInterface
             'Content-type' => 'application/x-www-form-urlencoded',
         ];
 
-        if ($host) {
+        if ($host !== '') {
             $response = $this->send(
                 $host,
                 $path,

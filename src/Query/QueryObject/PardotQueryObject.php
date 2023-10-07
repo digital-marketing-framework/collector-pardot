@@ -16,73 +16,80 @@ abstract class PardotQueryObject extends Query
         PardotConnectorInterface::ENVIRONMENT_DEVELOP_ORG => 'https://pi.demo.pardot.com',
     ];
 
-    protected string $version;
-    protected string $environment;
-    protected PardotTokenInterface $token;
-
     protected string $outputMode = 'simple';
+
     protected string $format = 'json';
 
-    public function __construct(PardotTokenInterface $token, string $environment = PardotConnectorInterface::ENVIRONMENT_PRODUCTION, string $version = '4')
-    {
-        $this->token = $token;
-        $this->environment = $environment;
-        $this->version = $version;
+    public function __construct(
+        protected PardotTokenInterface $token,
+        protected string $environment = PardotConnectorInterface::ENVIRONMENT_PRODUCTION,
+        protected string $version = '4'
+    ) {
     }
 
     public function outputMode(string $outputMode): PardotQueryObject
     {
         $this->outputMode = $outputMode;
+
         return $this;
     }
 
     public function format(string $format): PardotQueryObject
     {
         $this->format = $format;
+
         return $this;
     }
 
     /**
      * @param array<string,string> $headers
+     *
      * @return array<string,string>
      */
     protected function buildHeaders(array $headers): array
     {
         $headers = parent::buildHeaders($headers);
         $this->token->addHeaders($headers);
+
         return $headers;
     }
 
     /**
      * @param array<string,string> $parameters
+     *
      * @return array<string,string>
      */
     protected function buildUrlParameters(array $parameters): array
     {
         $parameters = parent::buildUrlParameters($parameters);
         $this->token->addUrlParameters($parameters);
+
         return $parameters;
     }
 
     /**
      * @param array<string,string> $cookies
+     *
      * @return array<string,string>
      */
     protected function buildCookies(array $cookies): array
     {
         $cookies = parent::buildCookies($cookies);
         $this->token->addCookies($cookies);
+
         return $cookies;
     }
 
     /**
      * @param array<string,string> $data
+     *
      * @return array<string,string>
      */
     protected function buildBodyData(array $data): array
     {
         $data = parent::buildBodyData($data);
         $this->token->addBodyData($data);
+
         return $data;
     }
 
@@ -94,9 +101,9 @@ abstract class PardotQueryObject extends Query
     }
 
     /**
-     * @param string $action
      * @param array<string,string> $pathParams
      * @param array<string,string> $params
+     *
      * @return array<mixed>|bool
      */
     public function doAction(string $action, array $pathParams = [], array $params = []): array|bool
@@ -119,6 +126,7 @@ abstract class PardotQueryObject extends Query
 
     /**
      * @param ResponseInterface $response
+     *
      * @return array<mixed>|bool
      */
     protected function computeResponse(ResponseInterface $response): array|bool
@@ -126,7 +134,7 @@ abstract class PardotQueryObject extends Query
         $result = $response->getBody()->getContents();
         if ($result) {
             if ($this->format === 'json') {
-                $result = json_decode($result, true);
+                $result = json_decode((string)$result, true, 512, JSON_THROW_ON_ERROR);
             }
 
             if (isset($result['err'])) {
@@ -135,11 +143,13 @@ abstract class PardotQueryObject extends Query
 
             return $result;
         }
+
         return false;
     }
 
     /**
      * @param array<string,string> $query
+     *
      * @return array<mixed>|bool
      */
     public function read(array $query): array|bool
@@ -149,6 +159,7 @@ abstract class PardotQueryObject extends Query
         if ($result && is_array($result) && isset($result[$objectName])) {
             return $result[$objectName];
         }
+
         return $result;
     }
 }

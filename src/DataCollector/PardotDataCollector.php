@@ -16,7 +16,6 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Renderin
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ScalarValues;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Exception\InvalidIdentifierException;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
@@ -25,6 +24,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 class PardotDataCollector extends DataCollector
 {
     public const KEY_OUTPUT_MODE = 'outputMode';
+
     public const DEFAULT_OUTPUT_MODE = 'simple';
 
     public const STATUS_CODE_INVALID_VISITOR_ID = 24;
@@ -42,12 +42,14 @@ class PardotDataCollector extends DataCollector
         $connectorConfig = $this->registry->getGlobalConfiguration()->get('digitalmarketingframework_collector_pardot');
         $this->pardotConnector->environment($connectorConfig['api']['environment'] ?? PardotConnectorInterface::ENVIRONMENT_PRODUCTION);
         $this->pardotConnector->version($connectorConfig['api']['version'] ?? 3);
+
         $this->credentials = $connectorConfig['api']['credentials'] ?? [];
     }
 
     protected function fetchProspect(string $prospectId): array
     {
         $outputMode = $this->getConfig(static::KEY_OUTPUT_MODE);
+
         return $this->pardotConnector->prospect()->outputMode($outputMode)->read(['id' => $prospectId]);
     }
 
@@ -72,13 +74,14 @@ class PardotDataCollector extends DataCollector
                 // this may have been an attempt to guess a visitor id, so we throw an exception specific for that
                 throw new InvalidIdentifierException(sprintf('Pardot visitor id "%s" was not valid', $visitorId));
             }
+
             return null;
         }
     }
 
     protected function login(): void
     {
-        if (empty($this->credentials)) {
+        if ($this->credentials === []) {
             throw new PardotConnectorException('credentials are empty');
         }
 
@@ -110,8 +113,8 @@ class PardotDataCollector extends DataCollector
                 if ($prospectId === null) {
                     return null;
                 }
-                array_unshift($identifiers, new PardotProspectIdentifier($prospectId));
 
+                array_unshift($identifiers, new PardotProspectIdentifier($prospectId));
             } elseif ($identifier instanceof PardotProspectIdentifier) {
                 // starting with a prospect id
                 $prospectId = $identifier->getProspectId();
@@ -125,10 +128,11 @@ class PardotDataCollector extends DataCollector
 
             // cast prospect data to official data format and return
             $data = GeneralUtility::castArrayToData($prospect);
-            return new DataCollectorResult($data, $identifiers);
 
+            return new DataCollectorResult($data, $identifiers);
         } catch (PardotConnectorException $e) {
             $this->logger->error('Pardot API - ' . $e->getMessage());
+
             return null;
         }
     }
@@ -144,6 +148,7 @@ class PardotDataCollector extends DataCollector
         $outputMode->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
 
         $schema->addProperty(static::KEY_OUTPUT_MODE, $outputMode);
+
         return $schema;
     }
 }
