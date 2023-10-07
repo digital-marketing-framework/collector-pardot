@@ -25,15 +25,13 @@ class SsoAuthenticatior extends Query implements PardotAuthenticatorInterface
     }
 
     /**
-     * @param ResponseInterface $response
-     *
-     * @return array<mixed>|bool
+     * @return array<mixed>|false
      */
-    protected function computeResponse(ResponseInterface $response): array|bool
+    protected function computeResponse(ResponseInterface $response): array|false
     {
         $result = $response->getBody()->getContents();
-        if ($result) {
-            return json_decode((string)$result, true, 512, JSON_THROW_ON_ERROR);
+        if ($result !== '') {
+            return json_decode($result, true, 512, JSON_THROW_ON_ERROR);
         }
 
         return false;

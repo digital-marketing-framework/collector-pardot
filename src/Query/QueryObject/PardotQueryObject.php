@@ -104,9 +104,9 @@ abstract class PardotQueryObject extends Query
      * @param array<string,string> $pathParams
      * @param array<string,string> $params
      *
-     * @return array<mixed>|bool
+     * @return array<mixed>|false
      */
-    public function doAction(string $action, array $pathParams = [], array $params = []): array|bool
+    public function doAction(string $action, array $pathParams = [], array $params = []): array|false
     {
         $path = '/api/' . $this->getObjectName() . '/version/' . $this->version . '/do/' . $action;
         foreach ($pathParams as $name => $value) {
@@ -125,16 +125,14 @@ abstract class PardotQueryObject extends Query
     }
 
     /**
-     * @param ResponseInterface $response
-     *
-     * @return array<mixed>|bool
+     * @return array<mixed>|false
      */
-    protected function computeResponse(ResponseInterface $response): array|bool
+    protected function computeResponse(ResponseInterface $response): array|false
     {
         $result = $response->getBody()->getContents();
-        if ($result) {
+        if ($result !== '') {
             if ($this->format === 'json') {
-                $result = json_decode((string)$result, true, 512, JSON_THROW_ON_ERROR);
+                $result = json_decode($result, true, 512, JSON_THROW_ON_ERROR);
             }
 
             if (isset($result['err'])) {
@@ -150,9 +148,9 @@ abstract class PardotQueryObject extends Query
     /**
      * @param array<string,string> $query
      *
-     * @return array<mixed>|bool
+     * @return array<mixed>|false
      */
-    public function read(array $query): array|bool
+    public function read(array $query): array|false
     {
         $result = $this->doAction('read', $query);
         $objectName = $this->getObjectName();

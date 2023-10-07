@@ -18,7 +18,7 @@ interface PardotConnectorInterface
     public function version(string $version): PardotConnectorInterface;
 
     /**
-     * @param array<mixed> $credentials
+     * @param array<string,mixed> $credentials
      */
     public function authenticate(array $credentials): bool;
 

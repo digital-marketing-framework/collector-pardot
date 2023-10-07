@@ -29,6 +29,7 @@ class PardotDataCollector extends DataCollector
 
     public const STATUS_CODE_INVALID_VISITOR_ID = 24;
 
+    /** @var array<string,mixed> */
     protected array $credentials;
 
     public function __construct(
@@ -46,13 +47,19 @@ class PardotDataCollector extends DataCollector
         $this->credentials = $connectorConfig['api']['credentials'] ?? [];
     }
 
-    protected function fetchProspect(string $prospectId): array
+    /**
+     * @return array<mixed>|false
+     */
+    protected function fetchProspect(string $prospectId): array|false
     {
         $outputMode = $this->getConfig(static::KEY_OUTPUT_MODE);
 
         return $this->pardotConnector->prospect()->outputMode($outputMode)->read(['id' => $prospectId]);
     }
 
+    /**
+     * @param array<mixed> $visitor
+     */
     protected function getProspectIdFromVisitorData(array $visitor): ?string
     {
         $prospectId = null;
@@ -64,7 +71,10 @@ class PardotDataCollector extends DataCollector
         return $prospectId ?: null;
     }
 
-    protected function fetchVisitor(string $visitorId): array
+    /**
+     * @return array<mixed>|false
+     */
+    protected function fetchVisitor(string $visitorId): array|false
     {
         try {
             return $this->pardotConnector->visitor()->outputMode('mobile')->read(['id' => $visitorId]);
@@ -75,7 +85,7 @@ class PardotDataCollector extends DataCollector
                 throw new InvalidIdentifierException(sprintf('Pardot visitor id "%s" was not valid', $visitorId));
             }
 
-            return null;
+            return false;
         }
     }
 
@@ -125,6 +135,9 @@ class PardotDataCollector extends DataCollector
 
             // fetch prospect data
             $prospect = $this->fetchProspect($prospectId);
+            if (!is_array($prospect)) {
+                throw new DigitalMarketingFrameworkException('Failed to load prospect');
+            }
 
             // cast prospect data to official data format and return
             $data = GeneralUtility::castArrayToData($prospect);

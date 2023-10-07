@@ -38,9 +38,6 @@ class PardotConnector implements PardotConnectorInterface
         return $this;
     }
 
-    /**
-     * @param array<mixed> $credentials
-     */
     public function authenticate(array $credentials): bool
     {
         $authenticator = $this->getAuthenticator();

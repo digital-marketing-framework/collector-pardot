@@ -117,11 +117,9 @@ abstract class Query
     }
 
     /**
-     * @param ResponseInterface $response
-     *
-     * @return array<mixed>|bool
+     * @return array<mixed>|false
      */
-    abstract protected function computeResponse(ResponseInterface $response): array|bool;
+    abstract protected function computeResponse(ResponseInterface $response): array|false;
 
     /**
      * @param array<string,string> $parameters
@@ -129,7 +127,7 @@ abstract class Query
      * @param array<string,string> $headers
      * @param array<string,string> $cookies
      *
-     * @return array<mixed>|bool
+     * @return array<mixed>|false
      */
     protected function send(
         string $host,
@@ -139,7 +137,7 @@ abstract class Query
         string $method = 'GET',
         array $headers = [],
         array $cookies = []
-    ) {
+    ): array|false {
         $uri = $this->buildUri($host, $path, $parameters);
         $requestOptions = [
             'body' => $this->buildBody($data),
