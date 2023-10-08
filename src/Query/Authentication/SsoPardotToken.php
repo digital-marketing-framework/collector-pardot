@@ -4,13 +4,10 @@ namespace DigitalMarketingFramework\Collector\Pardot\Query\Authentication;
 
 class SsoPardotToken extends PardotToken
 {
-    protected string $accessToken;
-    protected string $businessUnitId;
-
-    public function __construct(string $accessToken, string $businessUnitId)
-    {
-        $this->accessToken = $accessToken;
-        $this->businessUnitId = $businessUnitId;
+    public function __construct(
+        protected string $accessToken,
+        protected string $businessUnitId
+    ) {
     }
 
     /**

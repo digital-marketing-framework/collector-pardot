@@ -27,29 +27,30 @@ class PardotConnector implements PardotConnectorInterface
     public function environment(string $environment): PardotConnectorInterface
     {
         $this->environment = $environment;
+
         return $this;
     }
 
     public function version(string $version): PardotConnectorInterface
     {
         $this->version = $version;
+
         return $this;
     }
 
-    /**
-     * @param array<mixed> $credentials
-     */
     public function authenticate(array $credentials): bool
     {
         $authenticator = $this->getAuthenticator();
         try {
             $token = $authenticator->getAccessToken($credentials);
-            if ($token !== null) {
+            if ($token instanceof PardotTokenInterface) {
                 $this->token = $token;
+
                 return true;
             }
+
             return false;
-        } catch (PardotConnectorException $e) {
+        } catch (PardotConnectorException) {
             return false;
         }
     }
