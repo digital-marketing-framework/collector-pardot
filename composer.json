@@ -1,15 +1,14 @@
 {
     "name": "digital-marketing-framework/collector-pardot",
-    "description": "FormRelay is a data distribution framework.",
+    "description": "Digital Marketing Framework - Collector - Pardot",
     "license": "GPL-2.0-or-later",
     "type": "library",
     "keywords": [
+        "marketing",
         "framework",
-        "form",
         "data",
-        "submission",
         "relay",
-        "distribution",
+        "collector",
         "pardot"
     ],
     "authors": [
