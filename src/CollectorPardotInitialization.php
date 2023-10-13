@@ -24,8 +24,8 @@ class CollectorPardotInitialization extends Initialization
         ],
     ];
 
-    public function __construct()
+    public function __construct(string $packageAlias = '')
     {
-        parent::__construct('collector-pardot', '1.0.0');
+        parent::__construct('collector-pardot', '1.0.0', $packageAlias);
     }
 }
